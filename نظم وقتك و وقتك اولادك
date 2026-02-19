@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رفيقي ULTIMATE ELITE v7.0 | المنصة المتكاملة</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Orbitron:wght@400;700;900&family=Tajawal:wght@400;700;900&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        /* ============================================================
+           1. التصميم البصري الخارق (PREMIUM DESIGN SYSTEM)
+           ============================================================ */
+        :root {
+            --primary-color: #0984E3; --secondary-color: #6C5CE7;
+            --accent-color: #FD79A8; --success-color: #00B894;
+            --warning-color: #FDCB6E; --danger-color: #D63031;
+            --dark-surface: #2D3436; --light-surface: #F9FBFF;
+            --white: #FFFFFF; --sidebar-width: 380px;
+            --shadow-premium: 0 20px 40px rgba(0,0,0,0.08);
+            --transition-smooth: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+        body { 
+            font-family: 'Cairo', sans-serif; 
+            background: var(--light-surface); 
+            color: var(--dark-surface); 
+            display: flex; 
+            min-height: 100vh; 
+            overflow-x: hidden;
+        }
+
+        /*Sidebar*/
+        .sidebar { 
+            width: var(--sidebar-width); 
+            background: var(--white); 
+            border-left: 1px solid rgba(0,0,0,0.05); 
+            position: fixed; 
+            height: 100vh; 
+            padding: 40px; 
+            z-index: 1000; 
+            box-shadow: var(--shadow-premium);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-brand { text-align: center; margin-bottom: 50px; }
+        .sidebar-brand img { width: 100px; border-radius: 30px; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.1)); }
+        .sidebar-brand h1 { font-weight: 900; margin-top: 15px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .nav-list { list-style: none; flex: 1; }
+        .nav-btn { 
+            padding: 22px 25px; 
+            margin-bottom: 15px; 
+            border-radius: 25px; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            gap: 20px; 
+            font-weight: 800; 
+            color: #747d8c; 
+            transition: var(--transition-smooth);
+            border: 1px solid transparent;
+        }
+        .nav-btn i { font-size: 1.6rem; }
+        .nav-btn:hover { background: #f1f2f6; color: var(--primary-color); transform: translateX(-10px); }
+        .nav-btn.active { 
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)); 
+            color: white; 
+            box-shadow: 0 15px 30px rgba(108, 92, 231, 0.3);
+        }
+
+        /* Widgets */
+        .status-widget { background: #F0F4FF; padding: 30px; border-radius: 35px; text-align: center; margin-top: 20px; }
+        .status-widget h2 { font-size: 2.8rem; font-weight: 900; color: var(--secondary-color); }
+        .rank-badge { background: var(--warning-color); color: #B33939; padding: 5px 15px; border-radius: 10px; font-size: 0.9rem; font-weight: 900; }
+
+        /* Main View */
+        .main-view { margin-right: var(--sidebar-width); flex: 1; padding: 60px; width: calc(100% - var(--sidebar-width)); }
+        .app-section { display: none; animation: slideUp 0.6s ease forwards; }
+        .app-section.active { display: block; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Task Hero Card */
+        .hero-display { 
+            background: white; 
+            border-radius: 50px; 
+            padding: 80px 40px; 
+            text-align: center; 
+            box-shadow: var(--shadow-premium); 
+            position: relative;
+            border-bottom: 15px solid var(--primary-color);
+        }
+        .timer-display { 
+            font-family: 'Orbitron', sans-serif; 
+            font-size: 8rem; 
+            font-weight: 900; 
+            color: var(--dark-surface); 
+            margin: 40px 0; 
+            background: #f8f9fc;
+            display: inline-block;
+            padding: 20px 60px;
+            border-radius: 40px;
+            border: 4px solid #EDF2F7;
+        }
+
+        /* Camera System */
+        .camera-container { 
+            width: 100%; 
+            max-width: 500px; 
+            height: 350px; 
+            background: #000; 
+            margin: 30px auto; 
+            border-radius: 30px; 
+            overflow: hidden; 
+            position: relative;
+            display: none;
+            border: 5px solid var(--secondary-color);
+        }
+        #cam-feed { width: 100%; height: 100%; object-fit: cover; }
+
+        /* Forms & Inputs */
+        .pro-input { 
+            width: 100%; 
+            padding: 20px; 
+            margin-bottom: 20px; 
+            border-radius: 20px; 
+            border: 2px solid #EDF2F7; 
+            font-family: 'Cairo'; 
+            font-size: 1.1rem;
+            transition: 0.3s;
+        }
+        .pro-input:focus { border-color: var(--primary-color); background: #fdfdfd; }
+
+        .btn-mega { 
+            background: var(--success-color); 
+            color: white; 
+            border: none; 
+            padding: 25px 80px; 
+            font-size: 2rem; 
+            border-radius: 100px; 
+            cursor: pointer; 
+            font-weight: 900; 
+            transition: var(--transition-smooth);
+            box-shadow: 0 20px 40px rgba(0, 184, 148, 0.25);
+        }
+        .btn-mega:hover { transform: scale(1.05); filter: brightness(1.1); }
+        .btn-mega:disabled { background: #dcdde1; cursor: not-allowed; box-shadow: none; transform: none; }
+
+        /* Shop Grid */
+        .shop-layout { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 40px; }
+        .gift-card { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 40px; 
+            text-align: center; 
+            box-shadow: var(--shadow-premium);
+            border: 3px solid transparent;
+            transition: 0.4s;
+        }
+        .gift-card:hover { border-color: var(--accent-color); transform: translateY(-15px); }
+
+        /* Alerts & Modals */
+        .full-overlay { 
+            position: fixed; 
+            inset: 0; 
+            background: rgba(0,0,0,0.95); 
+            z-index: 9999; 
+            display: none; 
+            align-items: center; 
+            justify-content: center; 
+            backdrop-filter: blur(20px); 
+        }
+        .modal-content { 
+            background: white; 
+            width: 90%; 
+            max-width: 800px; 
+            border-radius: 60px; 
+            padding: 80px; 
+            text-align: center; 
+            animation: modalPop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes modalPop { from { scale: 0.5; opacity: 0; } to { scale: 1; opacity: 1; } }
+
+        /* Tables */
+        .data-table { width: 100%; border-collapse: collapse; background: white; border-radius: 30px; overflow: hidden; margin-top: 30px; }
+        .data-table th { background: var(--secondary-color); color: white; padding: 25px; text-align: right; }
+        .data-table td { padding: 20px; border-bottom: 1px solid #f1f2f6; }
+
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="sidebar-brand">
+            <img src="https://cdn-icons-png.flaticon.com/512/3048/3048122.png">
+            <h1>رفيقي ELITE</h1>
+        </div>
+        
+        <nav class="nav-list">
+            <li class="nav-btn active" onclick="Core.Nav.switch('hero-sec', this)"><i class="fas fa-rocket"></i> ملعب البطل</li>
+            <li class="nav-btn" onclick="Core.Nav.switch('shop-sec', this)"><i class="fas fa-gift"></i> مستودع الهدايا</li>
+            <li class="nav-btn" onclick="Core.Nav.switch('parent-sec', this)"><i class="fas fa-user-shield"></i> تحكم الأهل</li>
+            <li class="nav-btn" onclick="Core.Nav.switch('stats-sec', this)"><i class="fas fa-chart-pie"></i> سجل الإنجازات</li>
+        </nav>
+
+        <div class="status-widget">
+            <span class="rank-badge" id="rank-name">المستوى: مبتدئ</span>
+            <p style="margin-top: 10px; font-weight: 800; color: #a4b0be;">رصيد النجوم</p>
+            <h2 id="global-stars">0 🌟</h2>
+        </div>
+    </aside>
+
+    <main class="main-view">
+        
+        <section id="hero-sec" class="app-section active">
+            <div class="hero-display">
+                <div id="mystery-banner" style="display:none; background: var(--warning-color); padding:10px; border-radius:15px; font-weight:900; margin-bottom:20px;">🔥 مهمة سرية: نقاط مضاعفة!</div>
+                <span id="hero-icon" style="font-size: 150px; display: block;">🧘</span>
+                <h1 id="hero-task-name" style="font-size: 3.5rem; font-weight: 900; margin-top: 20px;">مرحباً يا بطل</h1>
+                <p id="hero-task-note" style="font-size: 1.6rem; color: #747d8c; margin-bottom: 30px;">استعد للمهمة القادمة لتكتسب النجوم!</p>
+                
+                <div id="main-timer" class="timer-display">00:00</div>
+
+                <div id="camera-box" class="camera-container">
+                    <video id="cam-feed" autoplay playsinline></video>
+                    <canvas id="snapshot" style="display:none;"></canvas>
+                </div>
+
+                <div style="margin-top: 40px;">
+                    <button id="btn-complete" class="btn-mega" onclick="Core.Logic.finish()" disabled>تــم الإنجاز ✅</button>
+                    <p id="timer-lock-msg" style="margin-top: 20px; color: var(--danger-color); font-weight: 900; display: none;">🔒 لا يمكنك الضغط حتى ينتهي الوقت!</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="shop-sec" class="app-section">
+            <h2 style="font-size: 2.5rem; font-weight: 900; margin-bottom: 40px;">🎁 استبدل نجومك بجوائز حقيقية</h2>
+            <div class="shop-layout" id="shop-grid"></div>
+        </section>
+
+        <section id="parent-sec" class="app-section">
+            <div class="hero-display" style="text-align: right; padding: 50px;">
+                <h2 style="margin-bottom: 40px; font-weight: 900; color: var(--secondary-color);"><i class="fas fa-lock-open"></i> إعداد المهام والتحكم</h2>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
+                    <div>
+                        <label style="font-weight: 900;">اسم المهمة</label>
+                        <input type="text" id="p-name" class="pro-input" placeholder="مثلاً: مذاكرة العلوم">
+                    </div>
+                    <div>
+                        <label style="font-weight: 900;">وقت التنبيه</label>
+                        <input type="time" id="p-time" class="pro-input">
+                    </div>
+                    <div>
+                        <label style="font-weight: 900;">المدة (بالدقائق)</label>
+                        <input type="number" id="p-dur" class="pro-input" value="15">
+                    </div>
+                    <div>
+                        <label style="font-weight: 900;">النقاط المستحقة</label>
+                        <input type="number" id="p-pts" class="pro-input" value="10">
+                    </div>
+                    <div>
+                        <label style="font-weight: 900;">تفعيل الكاميرا؟</label>
+                        <select id="p-cam" class="pro-input">
+                            <option value="no">لا</option>
+                            <option value="yes">نعم (تصوير الإنجاز)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label style="font-weight: 900;">كلمة السر (الافتراضية 1234)</label>
+                        <input type="password" id="p-pin" class="pro-input">
+                    </div>
+                </div>
+                <button class="btn-mega" style="width: 100%; margin-top: 30px;" onclick="Core.Parent.addTask()">حفظ المهمة في الجدول</button>
+            </div>
+        </section>
+
+        <section id="stats-sec" class="app-section">
+            <h2 style="font-weight: 900; margin-bottom: 30px;">📊 تقرير الأداء الشامل</h2>
+            <div style="background: white; border-radius: 40px; padding: 40px; box-shadow: var(--shadow-premium);">
+                <canvas id="performanceChart" height="120"></canvas>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>المهمة</th>
+                            <th>المدة</th>
+                            <th>النقاط</th>
+                            <th>التوقيت</th>
+                            <th>الصورة</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-rows"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <div id="main-alert" class="full-overlay">
+        <div class="modal-content">
+            <i class="fas fa-bell" style="font-size: 100px; color: var(--warning-color); animation: ring 0.5s infinite;"></i>
+            <h1 id="alert-title" style="font-size: 3.5rem; font-weight: 900; margin: 30px 0;">حان الموعد!</h1>
+            <p id="alert-msg" style="font-size: 1.8rem; color: #747d8c; margin-bottom: 50px;"></p>
+            <button class="btn-mega" onclick="Core.UI.beginTask()">بدأ التنفيذ الآن 🚀</button>
+        </div>
+    </div>
+
+    <audio id="bell-sound" src="https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3"></audio>
+
+    <script>
+        /**
+         * ============================================================
+         * 2. المحرك الملحمي (CORE ENGINE v7)
+         * ============================================================
+         */
+
+        const Core = {
+            state: {
+                stars: parseInt(localStorage.getItem('stars_v7')) || 0,
+                activeTask: null,
+                isRunning: false,
+                db: null,
+                timer: null,
+                stream: null,
+                lastMysteryHour: -1
+            },
+
+            // --- نظام الصوت ---
+            Voice: {
+                speak(txt) {
+                    window.speechSynthesis.cancel();
+                    const msg = new SpeechSynthesisUtterance(txt);
+                    msg.lang = 'ar-SA';
+                    window.speechSynthesis.speak(msg);
+                },
+                ring() { document.getElementById('bell-sound').play(); }
+            },
+
+            // --- نظام قاعدة البيانات ---
+            Database: {
+                async init() {
+                    return new Promise((res) => {
+                        const req = indexedDB.open('RafiqiElite_V7', 1);
+                        req.onupgradeneeded = (e) => {
+                            const db = e.target.result;
+                            db.createObjectStore('tasks', { keyPath: 'id', autoIncrement: true });
+                            db.createObjectStore('logs', { keyPath: 'id', autoIncrement: true });
+                        };
+                        req.onsuccess = (e) => { Core.state.db = e.target.result; res(); };
+                    });
+                }
+            },
+
+            // --- نظام الكاميرا ---
+            Camera: {
+                async start() {
+                    try {
+                        Core.state.stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                        document.getElementById('cam-feed').srcObject = Core.state.stream;
+                        document.getElementById('camera-box').style.display = 'block';
+                    } catch(e) { console.error("Camera Error"); }
+                },
+                stop() {
+                    if(Core.state.stream) {
+                        Core.state.stream.getTracks().forEach(t => t.stop());
+                        document.getElementById('camera-box').style.display = 'none';
+                    }
+                },
+                takeSnapshot() {
+                    const video = document.getElementById('cam-feed');
+                    const canvas = document.getElementById('snapshot');
+                    canvas.width = video.videoWidth;
+                    canvas.height = video.videoHeight;
+                    canvas.getContext('2d').drawImage(video, 0, 0);
+                    return canvas.toDataURL('image/webp');
+                }
+            },
+
+            // --- نظام العداد ---
+            Timer: {
+                init(mins) {
+                    clearInterval(Core.state.timer);
+                    let sec = mins * 60;
+                    document.getElementById('btn-complete').disabled = true;
+                    document.getElementById('timer-lock-msg').style.display = 'block';
+
+                    Core.state.timer = setInterval(() => {
+                        const m = Math.floor(sec / 60);
+                        const s = sec % 60;
+                        document.getElementById('main-timer').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+                        
+                        if(sec <= 0) {
+                            clearInterval(Core.state.timer);
+                            document.getElementById('btn-complete').disabled = false;
+                            document.getElementById('timer-lock-msg').style.display = 'none';
+                            Core.Voice.speak("انتهى الوقت! يمكنك الآن الضغط على زر الإنجاز.");
+                        }
+                        sec--;
+                    }, 1000);
+                }
+            },
+
+            // --- الواجهة والتنقل ---
+            Nav: {
+                switch(id, el) {
+                    document.querySelectorAll('.app-section').forEach(s => s.classList.remove('active'));
+                    document.querySelectorAll('.nav-btn').forEach(n => n.classList.remove('active'));
+                    document.getElementById(id).classList.add('active');
+                    el.classList.add('active');
+                    if(id === 'stats-sec') Core.Stats.load();
+                }
+            },
+
+            UI: {
+                triggerAlert(task) {
+                    Core.state.activeTask = task;
+                    Core.Voice.ring();
+                    document.getElementById('main-alert').style.display = 'flex';
+                    document.getElementById('alert-msg').innerText = `حان وقت ${task.name} لمدة ${task.dur} دقيقة.`;
+                    Core.Voice.speak(`انتبه يا بطل، حان موعد ${task.name}`);
+                },
+                beginTask() {
+                    const t = Core.state.activeTask;
+                    document.getElementById('main-alert').style.display = 'none';
+                    Core.state.isRunning = true;
+                    
+                    document.getElementById('hero-task-name').innerText = t.name;
+                    document.getElementById('hero-icon').innerText = t.icon || "🌟";
+                    
+                    if(t.isMystery) document.getElementById('mystery-banner').style.display = 'block';
+                    else document.getElementById('mystery-banner').style.display = 'none';
+
+                    if(t.useCam === 'yes') Core.Camera.start();
+                    Core.Timer.init(t.dur);
+                },
+                updateStars() {
+                    document.getElementById('global-stars').innerText = `${Core.state.stars} 🌟`;
+                    let rank = "مبتدئ";
+                    if(Core.state.stars > 500) rank = "بطل برونزي";
+                    if(Core.state.stars > 1500) rank = "فارس فضي";
+                    if(Core.state.stars > 3000) rank = "أسطورة ذهبية";
+                    document.getElementById('rank-name').innerText = `المستوى: ${rank}`;
+                }
+            },
+
+            Logic: {
+                async finish() {
+                    const t = Core.state.activeTask;
+                    let pts = parseInt(t.pts);
+                    if(t.isMystery) pts *= 2;
+
+                    let imgData = "";
+                    if(t.useCam === 'yes') imgData = Core.Camera.takeSnapshot();
+
+                    Core.state.stars += pts;
+                    localStorage.setItem('stars_v7', Core.state.stars);
+                    
+                    confetti({ particleCount: 300, spread: 100, origin: {y: 0.6} });
+                    Core.Voice.speak(`أنت مذهل! ربحت ${pts} نجمة.`);
+
+                    // الحفظ في السجل
+                    const tx = Core.state.db.transaction('logs', 'readwrite');
+                    tx.objectStore('logs').add({ 
+                        name: t.name, 
+                        pts: pts, 
+                        dur: t.dur, 
+                        date: new Date().toLocaleString(),
+                        img: imgData
+                    });
+
+                    Core.state.isRunning = false;
+                    Core.Camera.stop();
+                    Core.UI.updateStars();
+                    this.resetHero();
+                },
+                resetHero() {
+                    document.getElementById('hero-task-name').innerText = "مرحباً يا بطل";
+                    document.getElementById('main-timer').innerText = "00:00";
+                    document.getElementById('btn-complete').disabled = true;
+                    document.getElementById('hero-icon').innerText = "🧘";
+                    document.getElementById('mystery-banner').style.display = 'none';
+                }
+            },
+
+            Parent: {
+                async addTask() {
+                    if(document.getElementById('p-pin').value !== "1234") return alert("خطأ في كلمة السر!");
+
+                    const task = {
+                        name: document.getElementById('p-name').value,
+                        time: document.getElementById('p-time').value,
+                        dur: document.getElementById('p-dur').value,
+                        pts: document.getElementById('p-pts').value,
+                        useCam: document.getElementById('p-cam').value,
+                        triggered: false
+                    };
+                    const tx = Core.state.db.transaction('tasks', 'readwrite');
+                    await tx.objectStore('tasks').add(task);
+                    alert("تمت الجدولة بنجاح!");
+                    location.reload();
+                }
+            },
+
+            Stats: {
+                async load() {
+                    const tx = Core.state.db.transaction('logs', 'readonly');
+                    const logs = await new Promise(r => tx.objectStore('logs').getAll().onsuccess = (e) => r(e.target.result));
+                    const body = document.getElementById('history-rows');
+                    body.innerHTML = logs.reverse().map(l => `
+                        <tr>
+                            <td>${l.name}</td>
+                            <td>${l.dur} د</td>
+                            <td style="color:var(--success-color); font-weight:900;">+${l.pts}</td>
+                            <td>${l.date}</td>
+                            <td>${l.img ? `<img src="${l.img}" width="60" style="border-radius:10px;">` : 'بدون'}</td>
+                        </tr>
+                    `).join('');
+                }
+            }
+        };
+
+        // مصفوفة الجوائز
+        const PRIZES = [
+            { name: "ساعة ألعاب فيديو", cost: 100, ico: "🎮" },
+            { name: "طلب بيتزا", cost: 300, ico: "🍕" },
+            { name: "لعبة جديدة", cost: 800, ico: "🧸" },
+            { name: "يوم ترفيهي كامل", cost: 2000, ico: "🎡" }
+        ];
+
+        function initShop() {
+            const grid = document.getElementById('shop-grid');
+            grid.innerHTML = PRIZES.map(p => `
+                <div class="gift-card">
+                    <div style="font-size: 5rem;">${p.ico}</div>
+                    <h3 style="margin-top:20px; font-weight:900;">${p.name}</h3>
+                    <div style="background:#FFF3E0; color:#E67E22; padding:10px; border-radius:15px; margin:15px 0; font-weight:900;">${p.cost} 🌟</div>
+                    <button class="btn-mega" style="width:100%; font-size:1.2rem; padding:15px;" onclick="buyItem(${p.cost}, '${p.name}')">طلب الجائزة</button>
+                </div>
+            `).join('');
+        }
+
+        function buyItem(cost, name) {
+            if(Core.state.stars >= cost) {
+                const pin = prompt("ادخل كلمة سر الأهل لاعتماد الجائزة:");
+                if(pin === "1234") {
+                    Core.state.stars -= cost;
+                    localStorage.setItem('stars_v7', Core.state.stars);
+                    Core.UI.updateStars();
+                    Core.Voice.speak(`مبروك! تم اعتماد جائزة ${name}.`);
+                    confetti();
+                } else { alert("كلمة السر خاطئة!"); }
+            } else { alert("نجومك غير كافية!"); }
+        }
+
+        // المجدول الذكي
+        async function runClock() {
+            const now = new Date();
+            const timeStr = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+            
+            const tx = Core.state.db.transaction('tasks', 'readonly');
+            const tasks = await new Promise(r => tx.objectStore('tasks').getAll().onsuccess = (e) => r(e.target.result));
+            
+            tasks.forEach(t => {
+                if (t.time === timeStr && !t.triggered && !Core.state.isRunning) {
+                    Core.UI.triggerAlert(t);
+                    t.triggered = true;
+                }
+            });
+
+            // المهام العشوائية (كل ساعة)
+            if (now.getMinutes() === 0 && Core.state.lastMysteryHour !== now.getHours() && !Core.state.isRunning) {
+                Core.state.lastMysteryHour = now.getHours();
+                Core.UI.triggerAlert({ name: "تحدي الأبطال المفاجئ", dur: 5, pts: 40, isMystery: true, icon: "⚡" });
+            }
+        }
+
+        window.onload = async () => {
+            await Core.Database.init();
+            Core.UI.updateStars();
+            initShop();
+            setInterval(runClock, 10000);
+            Core.Voice.speak("أهلاً بك في نسخة الـ Elite. أنا جاهز لمساعدتك اليوم.");
+            Notification.requestPermission();
+        };
+
+    </script>
+</body>
+</html>
